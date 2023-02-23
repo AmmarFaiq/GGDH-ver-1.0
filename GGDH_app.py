@@ -21,7 +21,7 @@ import json
         
 path = 'https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/'
 
-geojsondata = gpd.read_file(path + 'wijk_2016_6.geojson')
+geojsondata = gpd.read_file("https://github.com/AmmarFaiq/GGDH-ver-1.0/raw/main/data/wijk_2016_6.geojson")
 
 geojsondata = geojsondata.to_crs(epsg=4326)
 geojsondata = geojsondata.explode(index_parts=False)
