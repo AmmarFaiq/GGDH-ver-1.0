@@ -14,13 +14,18 @@ import plotly.express as px
 import geopandas as gpd
 import json
 
-path = './data/'
+# https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/wijkgeo_all_file.json
+# https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/WijkEenzaamheid2016.csv
+# https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/Pilot_Wijkindicatoren_RoyH_Final_Aangepast%20-%20Copy.CSV
+# https://github.com/AmmarFaiq/GGDH-ver-1.0/raw/main/data/wijk_2016_6.geojson
+        
+path = 'https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/'
 
 geojsondata = gpd.read_file(path + 'wijk_2016_6.geojson')
 
 geojsondata = geojsondata.to_crs(epsg=4326)
-# geojsondata = geojsondata.sort_index()
 geojsondata = geojsondata.explode(index_parts=False)
+
 df_info = pd.read_csv(path + 'WijkEenzaamheid2016.csv')
 
 geo_df = geojsondata.merge(df_info, left_on="WKC", right_on= "wijkcode")
