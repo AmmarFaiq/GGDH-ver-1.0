@@ -19,6 +19,7 @@ path = './data/'
 geojsondata = gpd.read_file(path + 'wijk_2016_6.geojson')
 
 geojsondata = geojsondata.to_crs(epsg=4326)
+geojsondata = geojsondata.sort_index()
 geojsondata = geojsondata.explode(index_parts=False)
 df_info = pd.read_csv(path + 'WijkEenzaamheid2016.csv')
 
