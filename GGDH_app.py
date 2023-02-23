@@ -20,7 +20,7 @@ geojsondata = gpd.read_file(path + 'wijk_2016_6.geojson')
 
 geojsondata = geojsondata.to_crs(epsg=4326)
 # geojsondata = geojsondata.sort_index()
-# geojsondata = geojsondata.explode(index_parts=False)
+geojsondata = geojsondata.explode(index_parts=False)
 df_info = pd.read_csv(path + 'WijkEenzaamheid2016.csv')
 
 geo_df = geojsondata.merge(df_info, left_on="WKC", right_on= "wijkcode")
