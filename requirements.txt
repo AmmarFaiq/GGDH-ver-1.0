@@ -9,4 +9,4 @@ numpy
 pandas
 plotly
 requests
-geopandas
+geopandas==0.12.2
