@@ -49,10 +49,10 @@ values_all_regions = values_haaglanden + values_roaz
 
 geo_df = geo_df.query("gemnaam in @values_all_regions")
 
+df = pd.read_csv(path + 'Pilot_Wijkindicatoren_RoyH_Final_Aangepast - Copy.csv')
+
 with open("https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/wijkgeo_all_file.json") as f:
   geo_df_fff = json.load(f)
-  
-df = pd.read_csv(path + 'Pilot_Wijkindicatoren_RoyH_Final_Aangepast - Copy.csv')
 
 
 radio_themes = dbc.RadioItems(
