@@ -51,7 +51,9 @@ geo_df = geo_df.query("gemnaam in @values_all_regions")
 
 df = pd.read_csv(path + "Pilot_Wijkindicatoren_RoyH_Final_Aangepast%20-%20Copy.CSV")
 
-with open("raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/wijkgeo_all_file.json") as f:
+resp_json_all = request.get("https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/wijkgeo_all_file.json")
+
+with open(resp_json_all) as f:
   geo_df_fff = json.load(f)
 
 
