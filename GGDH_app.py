@@ -52,10 +52,12 @@ geo_df = geo_df.query("gemnaam in @values_all_regions")
 
 df = pd.read_csv(path + "Pilot_Wijkindicatoren_RoyH_Final_Aangepast%20-%20Copy.CSV")
 
-# resp_json_all = requests.get("https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/wijkgeo_all_file.json")
+resp_json_all = requests.get("https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/wijkgeo_all_file.json")
+# The .json() method automatically parses the response into JSON.
+geo_df_fff = resp_json_all.json()
 
-with open("https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/wijkgeo_all_file.json", 'r') as f:
-  geo_df_fff = json.load(f)
+# with open("https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/wijkgeo_all_file.json", 'r') as f:
+#   geo_df_fff = json.load(f)
 
 
 radio_themes = dbc.RadioItems(
