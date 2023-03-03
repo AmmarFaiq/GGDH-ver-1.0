@@ -51,6 +51,7 @@ values_all_regions = values_haaglanden + values_roaz
 geo_df = geo_df.query("gemnaam in @values_all_regions")
 
 df = pd.read_csv(path + "Pilot_Wijkindicatoren_RoyH_Final_Aangepast%20-%20Copy.CSV")
+df_predicted = pd.read_csv(path + "Pilot_Wijkindicatoren_RoyH_Final_Aangepast%20-%20predicted.csv")
 
 resp_json_all = requests.get("https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/wijkgeo_all_file.json")
 # The .json() method automatically parses the response into JSON.
@@ -132,7 +133,7 @@ app.layout = html.Div([
 
     
         html.Div([
-                    html.H1(children='The Hague Neighbourhood Dashboard (Ver 1.2)', style={
+                    html.H1(children='The Hague Neighbourhood Dashboard (Ver 1.0)', style={
                                                                 'display': 'inline-block',    
                                                                 'width' : '150px',
                                                                 'height' : '50px',
@@ -233,7 +234,7 @@ app.layout = html.Div([
                                     
                                     html.Label(id='title_map', style={'font-size':'medium','padding-bottom': '10%'}), 
                                     html.Br(),
-                                    html.Label('These Number refer to the average healthcare consumption per disctrict from chosen variable (Please click to see the trendline)', style={'font-size':'9px','color' : 'black'}),
+                                    html.Label('Click on a tile to see the trendline!', style={'font-size':'9px','color' : 'black'}),
                                     
                                 ], style={'width': '70%'}),
                                 
@@ -258,7 +259,7 @@ app.layout = html.Div([
                         html.Div([
                             html.Label(id='wijk_trend_label', style={'font-size': 'medium'}),
                             html.Br(),
-                            html.Label('Click on it to know more!', style={'font-size':'9px'}),
+                            html.Label('Click the button and legends to know more!', style={'font-size':'9px'}),
                             
                             dcc.Graph(id='wijk_trend_fig', style={'height':'400px'}),
                         ], className='box', style={
@@ -478,12 +479,24 @@ def update_graph_bar(year_value, xaxis_column_name, wijk_name
         #         )
         # fig.update_traces(customdata=geo_df2['wijknaam'])
         # geo_df2 = geo_df[geo_df['gemnaam'] == "'s-Gravenhage"]
-        dff['group'] = pd.qcut(dff[xaxis_column_name], 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
-
+        dff['group'] = pd.qcut(dff[xaxis_column_name], 4, labels=['Category 1', 'Category 2', 'Category 3', 'Category 4'])
+        colorscale = ["#402580", 
+                  "#38309F", 
+                  "#3C50BF", 
+                  "#4980DF", 
+                  "#56B7FF",
+                  "#6ADDFF",
+                    # "#7FFCFF",
+                    # "#95FFF5",
+                    # "#ABFFE8",
+                    # "#C2FFE3",
+                    # "#DAFFE6"
+                  ]
         fig = px.bar(x=dff[xaxis_column_name],
                 y=dff['Wijknaam'],
                 color=dff['group'],
-                hover_name=dff['Wijknaam']
+                hover_name=dff['Wijknaam'],
+                color_discrete_sequence=colorscale
                 )
         fig.update_traces(customdata=dff['Wijknaam'])
 
@@ -515,9 +528,23 @@ def update_graph(clickData,
     wijk_dict = {}
     for i in range(len(df['Wijknaam'].unique())):
         wijk_dict[df['Wijknaam'].unique()[i]] = i
-
+    colorscale = ["#402580", 
+                  "#38309F", 
+                  "#3C50BF", 
+                  "#4980DF", 
+                  "#56B7FF",
+                  "#6ADDFF",
+                    "#7FFCFF",
+                    "#95FFF5",
+                    "#ABFFE8",
+                    "#C2FFE3",
+                    "#DAFFE6"
+                  ]
     # df['group'] = pd.qcut(df[xaxis_column_name], 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
-    fig = px.line(df, x='Jaar', y= xaxis_column_name, color='Wijknaam')
+    fig = px.line(df, x='Jaar', y= xaxis_column_name, color='Wijknaam', color_discrete_sequence=colorscale)
+    # fig.add_trace(go.Scatter(x=df_predicted['Jaar'], y=df_predicted[xaxis_column_name], mode='lines', line={'dash': 'dash', 'color': 'blue'}))
+    
+    
     fig.update_layout(
             xaxis=dict(
                 rangeselector=
@@ -550,9 +577,16 @@ def update_graph(clickData,
                                 
                                 dict(
                                     args=["visible", True],
+                                    # args=[{'visible':False}, [37] ],
                                     label="Select All",
                                     method="restyle"
-                                )
+                                ),
+                                 dict(
+                                    # args=["visible", True],
+                                    args=[{'visible':False}, [37] ],
+                                    label="Remove Prediction",
+                                    method="restyle"
+                                ),
                             ]),
                             pad={"r": 0, "t": -20},
                             showactive=False,
@@ -570,14 +604,25 @@ def update_graph(clickData,
 
         fig.data[wijk_dict["Centrum"]].visible=True 
 
+        fig.add_trace(go.Scatter(x=df_predicted[df_predicted['Wijknaam'] == "Centrum"]['Jaar'], 
+                                 y=df_predicted[df_predicted['Wijknaam'] == "Centrum"][xaxis_column_name], 
+                                 mode='lines', line={'dash': 'dash', 'color': 'blue'}, name='Predicted trend'))
+    
+
         return title, fig
     
+
     else:
         i = clickData['points'][0]['pointNumber']
         city = f['data'][0]['hovertext'][i]
         title = '3.{} - {}'.format(xaxis_column_name, city)
 
         fig.update_traces(visible="legendonly") 
+
+        fig.add_trace(go.Scatter(x=df_predicted[df_predicted['Wijknaam'] == city]['Jaar'], 
+                                 y=df_predicted[df_predicted['Wijknaam'] == city][xaxis_column_name], 
+                                 mode='lines', line={'dash': 'dash', 'color': 'blue'}, name='Predicted trend'))
+    
 
         fig.data[wijk_dict[city]].visible=True 
 
@@ -586,6 +631,7 @@ def update_graph(clickData,
 
     return title, dash.no_update
 
+# take the first row of the dataframe and create a copy of it for n times
 
 
 
