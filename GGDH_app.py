@@ -279,9 +279,9 @@ app.layout = html.Div([
                         html.Label(id='title_bar'),           
                         dcc.Graph(id='bar_fig', style={'height':'979px'}), 
                         # html.Br(),
-                    ], className='box', style={}),
+                    ], className='box'),
                     
-                ], style={'width': '40%','box-sizing': 'border-box','display': 'inline-block'}),
+                ], style={'width': '40%','display': 'inline-block'}),
 
 
                            
