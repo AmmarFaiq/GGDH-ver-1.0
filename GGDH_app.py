@@ -64,7 +64,7 @@ geo_df_fff = resp_json_all.json()
 radio_themes = dbc.RadioItems(
         id='ani_themes', 
         className='radio',
-        options=[dict(label='Overall', value=0), dict(label='Chronic Care', value=1), dict(label='CVD', value=2), dict(label='Youth', value=3), dict(label='Pallative', value=4)],
+        options=[dict(label='Overall', value=0), dict(label='Chronic Care', value=1), dict(label='CVD', value=2), dict(label='Youth', value=3), dict(label='Adv Analytics', value=4)],
         value=0, 
         inline=True
     )
