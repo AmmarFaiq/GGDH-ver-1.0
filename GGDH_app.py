@@ -143,8 +143,8 @@ app.layout = html.Div([
                                                                 }),
                     html.A([html.Img(src=app.get_asset_url('hc-dh-logo.png'), style={'display': 'inline-block',
                                                                              'margin-top': '10px',
-                                                                'width' : '180px',
-                                                                'height' : '180px'
+                                                                'width' : '110px',
+                                                                'height' : '110px'
                                                                 })], href='https://healthcampusdenhaag.nl/nl/'),
                     html.Div([
                         html.Img(src=app.get_asset_url('lumc-1-500x500.jpg'), style={'display': 'inline-block',
@@ -214,15 +214,23 @@ app.layout = html.Div([
             
 
             html.Div([
-                html.Div([
-                    
+    
                     html.Div([
-                        
+                    html.Div([
                     html.Label('1. Choose a variable to plot from the Overall Themes:', id='choose_variable'#, style= {'margin': '5px'}
                                ),
-                    drop_var,
+                    drop_var], style={'width': '50%','display': 'inline-block'}),
+
+                    html.Div([
+                    html.Label('Choose an area to plot:', id='choose_area'#, style= {'margin': '5px'}
+                               ),
+                                    drop_wijk, 
+                             
+                                ], style={'width': '50%','display': 'inline-block'}),
                     
                     ], className='box'),
+                html.Div([
+                    
 
                     html.Div([
                         
@@ -238,10 +246,7 @@ app.layout = html.Div([
                                     
                                 ], style={'width': '70%'}),
                                 
-                                html.Div([
-                                    drop_wijk, 
-                             
-                                ], style={'width': '30%'}),
+                                
                             ], className='row'),
                             html.Br(),
                             html.Br(),
@@ -277,7 +282,7 @@ app.layout = html.Div([
 
                     html.Div([   
                         html.Label(id='title_bar'),           
-                        dcc.Graph(id='bar_fig', style={'height':'979px'}), 
+                        dcc.Graph(id='bar_fig', style={'height':'864px'}), 
                         # html.Br(),
                     ], className='box'),
                     
