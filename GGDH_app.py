@@ -60,7 +60,7 @@ df = df_count.merge(df_numeric, on=['WKC','Wijknaam','GMN','YEAR'])
 radio_themes = dbc.RadioItems(
         id='ani_themes', 
         className='radio',
-        options=[dict(label='Home', value=0), dict(label='Adv Analysitc', value=1), dict(label='Diabetes', value=2), dict(label='Chronic Care', value=3), dict(label='Report', value=4)],
+        options=[dict(label='Home', value=0), dict(label='Adv Analysitc', value=1, href='https://ggdh-dash-adv-analytics.onrender.com'), dict(label='Diabetes', value=2), dict(label='Chronic Care', value=3), dict(label='Report', value=4)],
         value=0, 
         inline=True
     )
