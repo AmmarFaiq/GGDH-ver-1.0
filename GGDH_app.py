@@ -52,19 +52,10 @@ values_all_regions = values_haaglanden + values_roaz
 
 geo_df = geo_df.query("gemnaam in @values_all_regions")
 
-# with open(path + 'wijkgeo_all_file.json') as f:
-#   geo_df_fff = json.load(f)
 
 df_numeric = pd.read_csv(path + 'df_numeric.csv')
 df_count = pd.read_csv(path + 'df_count.csv')
 df = df_count.merge(df_numeric, on=['WKC','Wijknaam','GMN','YEAR'])
-
-df_predicted = pd.read_csv(path + 'Pilot_Wijkindicatoren_RoyH_Final_Aangepast - predicted.csv')
-
-
-## make a code to remove the first 2 words seperated by a space, from a column "Wijknaam" if there is "wijk" in the first word
-# geo_df['Wijknaam'] = geo_df['Wijknaam'].apply(lambda x: ' '.join(x.split()[2:]) if x.split()[0] == 'Wijk' else x)
-
 
 radio_themes = dbc.RadioItems(
         id='ani_themes', 
