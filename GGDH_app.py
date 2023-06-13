@@ -31,7 +31,7 @@ df_info = pd.read_csv(path + 'WijkEenzaamheid2016.csv')
 
 geo_df = geojsondata.merge(df_info, left_on="WKC", right_on= "wijkcode")
 
-values_region= ["'s-Gravenhage", "Haaglanden", "Leiden", "Roaz", "Wassenar"]
+values_region= ["'s-Gravenhage", "Haaglanden", "Leiden", "Roaz", "Wassenaar"]
 
 values_haaglanden=["'s-Gravenhage",
         "Delft","Leidschendam-Voorburg",
@@ -46,49 +46,60 @@ values_roaz=["'s-Gravenhage", "Alphen aan den Rijn", "Bodegraven-Reeuwijk",
         "Pijnacker-Nootdorp","Rijswijk","Teylingen","Voorschoten", "Waddinxveen",
         "Wassenaar","Westland","Zoetermeer","Zoeterwoude","Zuidplas"]
 
+values_hadoks= ["'s-Gravenhage", "Leidschendam-Voorburg", "Rijswijk", "Wassenaar"]
+
 values_all_regions = values_haaglanden + values_roaz
 
 geo_df = geo_df.query("gemnaam in @values_all_regions")
 
-df = pd.read_csv(path + "Pilot_Wijkindicatoren_RoyH_Final_Aangepast%20-%20Copy.CSV")
-df_predicted = pd.read_csv(path + "Pilot_Wijkindicatoren_RoyH_Final_Aangepast%20-%20predicted.csv")
+with open(path + 'wijkgeo_all_file.json') as f:
+  geo_df_fff = json.load(f)
 
-resp_json_all = requests.get("https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/wijkgeo_all_file.json")
-# The .json() method automatically parses the response into JSON.
-geo_df_fff = resp_json_all.json()
+  
+df_numeric = pd.read_csv(path + 'df_numeric.csv')
+df_count = pd.read_csv(path + 'df_count.csv')
+df = df_count.merge(df_numeric, on=['WKC','Wijknaam','GMN','YEAR'])
 
-# with open("https://raw.githubusercontent.com/AmmarFaiq/GGDH-ver-1.0/main/data/wijkgeo_all_file.json", 'r') as f:
-#   geo_df_fff = json.load(f)
+df_predicted = pd.read_csv(path + 'Pilot_Wijkindicatoren_RoyH_Final_Aangepast - predicted.csv')
+
+
+## make a code to remove the first 2 words seperated by a space, from a column "Wijknaam" if there is "wijk" in the first word
+# geo_df['Wijknaam'] = geo_df['Wijknaam'].apply(lambda x: ' '.join(x.split()[2:]) if x.split()[0] == 'Wijk' else x)
 
 
 radio_themes = dbc.RadioItems(
         id='ani_themes', 
         className='radio',
-        options=[dict(label='Overall', value=0), dict(label='Chronic Care', value=1), dict(label='CVD', value=2), dict(label='Youth', value=3), dict(label='Adv Analytics', value=4)],
+        options=[dict(label='Home', value=0), dict(label='Adv Analysitc', value=1), dict(label='Diabetes', value=2), dict(label='Chronic Care', value=3), dict(label='Report', value=4)],
         value=0, 
         inline=True
     )
 
-options_overall = geo_df.columns[9:25]
 
 # options_chronic = geo_df.columns[9:25]
 
 # options_CVD = geo_df.columns[9:25]
 
-options_overall = df.columns[6:25]
+# options_overall = df.columns[4:25]
 
-# drop_var = dcc.Dropdown(
-#         options_overall,
-#         'Totale bevolking',
-#         id = 'drop_var_id',
-#         clearable=False,
-#         searchable=False, 
-#         style= {'margin': '4px', 'box-shadow': '0px 0px #ebb36a', 'border-color': '#ebb36a'}        
-#     )
+NUMERIC_COLUMN_NAME = ['AGE','Person_in_Household','Income','Moving_Count','Lifeevents_Count','UniqueMed_Count','ZVWKOSTENTOTAAL','ZVWKFARMACIE','ZVWKHUISARTS','ZVWKZIEKENHUIS','ZVWKFARMACIE','ZVWKOSTENPSYCHO']
+
+CATEGORICAL_COLUMN_NAME = ['Total_Population', '%_Gender_Vrouwen', '%_0to20', '%_21to40', '%_41to60', '%_61to80', '%_Above80',
+                           '%_MajorEthnicity_Native Dutch', '%_MajorEthnicity_Western','%_MajorEthnicity_Non-Western', 
+                           '%_MinorEthnicity_Marokko', '%_MinorEthnicity_Suriname', '%_MinorEthnicity_Turkije', '%_MinorEthnicity_Voormalige Nederlandse Antillen en Aruba',
+                           '%_Multiperson_Household', '%_HouseholdType_Institutional',
+                           '%_Employee', '%_Unemployment_benefit_user', '%_Welfare_benefit_user',
+                           '%_Other_social_benefit_user', '%_Sickness_benefit_user','%_Pension_benefit_user', 
+                           '%_Moving_count_above_1','%_Lifeevents_count_above_2', 
+                           '%_Low_Income', '%_Debt', '%_Wanbet',
+                           '%_WMO_user','%_WLZ_user','%_ZVWKHUISARTS_user', '%_ZVWKFARMACIE_user', '%_ZVWKZIEKENHUIS_user', '%_ZVWKOSTENPSYCHO_user', '%_HVZ_Medication_user',
+                           '%_UniqueMed_Count_>5', '%_DIAB_Medication_user','%_BLOEDDRUKV_Medication_user', '%_CHOL_Medication_user',
+                           '%_Hypertensie_patients', '%_COPD_patients', '%_Diabetes_I_patients','%_Diabetes_II_patients', '%_Chronic_Hartfalen_patients', '%_Morbus_Parkinson_patients', '%_Heupfractuur_patients','%_BMIUP45_patients'
+                           ]
 
 drop_var = dcc.Dropdown(
-        options_overall,
-        'Gem GGZ Kosten',
+        CATEGORICAL_COLUMN_NAME + NUMERIC_COLUMN_NAME,
+        'Total_Population',
         id = 'drop_var_id',
         clearable=False,
         searchable=False, 
@@ -99,12 +110,17 @@ drop_wijk = dcc.Dropdown(
         id = 'drop_wijk',
         clearable=False, 
         searchable=False, 
-        options=[{'label': 'Roaz', 'value': 'Roaz'},
-                {'label': "Haaglanden", 'value': 'Haaglanden'},
-                {'label': "'s-gravenhage", 'value': "'s-gravenhage"},
-                {'label': 'Leiden', 'value': 'Leiden'},
-                {'label': 'Wassenaar', 'value': 'Wassenaar'},
-                {'label': 'Delft', 'value': 'Delft'}],
+        options=[
+            {'label': "Hadoks Area", 'value': "HadoksArea"},
+            {'label': "'s-gravenhage", 'value': "'s-gravenhage"},
+            {'label': "Rijswijk", 'value': "Rijswijk"},
+            {'label': 'Leidschendam-Voorburg', 'value': 'Leidschendam-Voorburg'},
+            {'label': 'Wassenaar', 'value': 'Wassenaar'},
+            # {'label': 'Roaz', 'value': 'Roaz'},
+            # {'label': "Haaglanden", 'value': 'Haaglanden'},
+            # {'label': 'Leiden', 'value': 'Leiden'},
+            # {'label': 'Delft', 'value': 'Delft'}
+            ],
         value="'s-gravenhage", 
         style= {'margin': '4px', 'box-shadow': '0px 0px #ebb36a', 'border-color': '#ebb36a'}
     )
@@ -113,16 +129,12 @@ drop_wijk = dcc.Dropdown(
 slider_map = daq.Slider(
         id = 'slider_map',
         handleLabel={"showCurrentValue": True,"label": "Year"},
-        # marks = {str(i):str(i) for i in [2015,2016,2017,2018,2019,2019,2020,2021]},
-        # min = 2015,
-        # max = 2021,
-        marks = {str(i):str(i) for i in [2010,2011,2012,2013,2014,2015,2016]},
-        min = 2010,
-        max = 2016,
-        size=400, 
+        marks = {str(i):str(i) for i in [2011,2012,2013,2014,2015,2016,2017,2018,2019,2019,2020]},
+        min = 2011,
+        max = 2020,
+        size=550, 
         color='#ADD8E6'
     )
-
 #------------------------------------------------------ APP ------------------------------------------------------ 
 
 app = dash.Dash(__name__)
@@ -217,12 +229,12 @@ app.layout = html.Div([
     
                     html.Div([
                     html.Div([
-                    html.Label('1. Choose a variable to plot from the Overall Themes:', id='choose_variable'#, style= {'margin': '5px'}
+                    html.Label('Choose a variable to plot :', id='choose_variable'#, style= {'margin': '5px'}
                                ),
                     drop_var], style={'width': '50%','display': 'inline-block'}),
 
                     html.Div([
-                    html.Label('Choose an area to plot:', id='choose_area'#, style= {'margin': '5px'}
+                    html.Label('Choose a region to plot:', id='choose_area'#, style= {'margin': '5px'}
                                ),
                                     drop_wijk, 
                              
@@ -253,7 +265,7 @@ app.layout = html.Div([
                             html.Br(),
                             html.Div([
                                 slider_map
-                            ], style={'margin-left': '15%', 'position':'relative', 'top':'-10px'}),
+                            ], style={'margin-left': '5%', 'position':'relative', 'top':'-10px'}),
 
                             dcc.Graph(id='map', style={'position':'relative',  'height':'300px', 'top':'10px'
                                                        }), 
@@ -332,7 +344,7 @@ app.layout = html.Div([
 
 def update_slider(product):
     
-    year = df['Jaar'].max()
+    year = df['YEAR'].max()
     return year, year
 
 @app.callback(
@@ -344,70 +356,40 @@ def update_slider(product):
     )
 def update_graph_map(year_value, xaxis_column_name, wijk_name
                  ):
-    dff = df[df['Jaar'] == year_value]
+    dff = df[df['YEAR'] == year_value]
     colorscale = ["#402580", 
                   "#38309F", 
                   "#3C50BF", 
                   "#4980DF", 
                   "#56B7FF",
-                  "#6ADDFF",
-                    # "#7FFCFF",
-                    # "#95FFF5",
-                    # "#ABFFE8",
-                    # "#C2FFE3",
-                    # "#DAFFE6"
+                  "#6ADDFF"
                   ]
 
 
-    title = '{} - {} - {} '.format(xaxis_column_name, wijk_name, year_value)   
+    title = '{} - {} - {} '.format(xaxis_column_name, wijk_name, year_value)
 
-    bigger_region = "Totale bevolking"
-
-    if wijk_name == "Roaz":
-        geo_df2 = geo_df.query("gemnaam in @values_roaz")
-        fig = px.choropleth_mapbox(geo_df2, geojson=geo_df_fff, color=bigger_region,
-                            locations="WKC", featureidkey="properties.WKC", opacity = 0.3,
-                            center={"lat": 52.1601, "lon": 4.4970}, color_continuous_scale=colorscale,
-                            mapbox_style="carto-positron", zoom=9, hover_name="wijknaam")
-    
-    elif wijk_name == 'Haaglanden':    
-        geo_df2 = geo_df.query("gemnaam in @values_haaglanden")
-        fig = px.choropleth_mapbox(geo_df2, geojson=geo_df_fff, color=bigger_region,
+    if xaxis_column_name in NUMERIC_COLUMN_NAME :
+        variable_name = xaxis_column_name + "_MEAN"
+    else:
+        variable_name = xaxis_column_name
+        
+    if wijk_name == 'HadoksArea':    
+        dff = dff.query("GMN in @values_hadoks")
+        fig = px.choropleth_mapbox(dff, geojson=geo_df_fff, color=variable_name,
                             locations="WKC", featureidkey="properties.WKC", opacity = 0.3,
                             center={"lat": 52.0705, "lon": 4.3003}, color_continuous_scale=colorscale,
-                            mapbox_style="carto-positron", zoom=9, hover_name="wijknaam")
-
-    elif wijk_name == "Leiden":
-        geo_df2 = geo_df[geo_df['gemnaam'] == "Leiden"]
-        fig = px.choropleth_mapbox(geo_df2, geojson=geo_df_fff, color=bigger_region,
+                            mapbox_style="carto-positron", zoom=9, hover_name="Wijknaam")
+        
+    elif wijk_name == "'s-gravenhage":    
+        fig = px.choropleth_mapbox(dff[dff.GMN == "'s-Gravenhage"], geojson=geo_df_fff, color=variable_name,
                             locations="WKC", featureidkey="properties.WKC", opacity = 0.3,
-                            center={"lat": 52.1601, "lon": 4.4970}, color_continuous_scale=colorscale,
-                            mapbox_style="carto-positron", zoom=10, hover_name="wijknaam")    
-
-    elif wijk_name == "Wassenaar":
-        geo_df2 = geo_df[geo_df['gemnaam'] == "Wassenaar"]
-        fig = px.choropleth_mapbox(geo_df2, geojson=geo_df_fff, color=bigger_region,
-                            locations="WKC", featureidkey="properties.WKC", opacity = 0.3,
-                            center={"lat": 52.1429, "lon": 4.4012}, color_continuous_scale=colorscale,
-                            mapbox_style="carto-positron", zoom=10, hover_name="wijknaam")
-
-    elif wijk_name == "Delft":
-        geo_df2 = geo_df[geo_df['gemnaam'] == "Delft"]
-        fig = px.choropleth_mapbox(geo_df2, geojson=geo_df_fff, color=bigger_region,
-                            locations="WKC", featureidkey="properties.WKC", opacity = 0.3,
-                            center={"lat": 52.0116, "lon": 4.3571}, color_continuous_scale=colorscale,
-                            mapbox_style="carto-positron", zoom=10, hover_name="wijknaam")
-                
+                            center={"lat": 52.0705, "lon": 4.3003}, color_continuous_scale=colorscale,
+                            mapbox_style="carto-positron", zoom=9, hover_name="Wijknaam")
+   
     else:
-        # geo_df2 = geo_df[geo_df['gemnaam'] == "'s-Gravenhage"]
-        # fig = px.choropleth_mapbox(geo_df2, geojson=geo_df_fff, color=bigger_region,
-        #                     locations="WKC", featureidkey="properties.WKC", opacity = 0.3,
-        #                     center={"lat": 52.0705, "lon": 4.3003}, color_continuous_scale=colorscale,
-        #                     mapbox_style="carto-positron", zoom=10, hover_name="wijknaam")
-        # geo_df2 = geo_df[geo_df['gemnaam'] == "'s-Gravenhage"]
 
-        fig = px.choropleth_mapbox(dff, geojson=geo_df_fff, color=xaxis_column_name,
-                            locations="Wijkcode", featureidkey="properties.WKC", opacity = 0.3,
+        fig = px.choropleth_mapbox(dff[dff.GMN == wijk_name], geojson=geo_df_fff, color=variable_name,
+                            locations="WKC", featureidkey="properties.WKC", opacity = 0.3,
                             center={"lat": 52.0705, "lon": 4.3003}, color_continuous_scale=colorscale,
                             mapbox_style="carto-positron", zoom=10, hover_name="Wijknaam")
 
@@ -423,7 +405,6 @@ def update_graph_map(year_value, xaxis_column_name, wijk_name
 
 # create a new column that put each row into a group of 4 numbers based on the value of a column quartile
 
-
 @app.callback(
     Output('title_bar', 'children'),
     Output('bar_fig', 'figure'),
@@ -434,70 +415,28 @@ def update_graph_map(year_value, xaxis_column_name, wijk_name
 def update_graph_bar(year_value, xaxis_column_name, wijk_name
                     ):
     
-    dff = df[df['Jaar'] == year_value]
-    bigger_region = "Totale bevolking"
-    if wijk_name == "Roaz":
-        geo_df2 = geo_df.query("gemnaam in @values_roaz")
-        fig = px.bar(x=geo_df2[bigger_region],
-                y=geo_df2['wijknaam'],
-                hover_name=geo_df2['wijknaam']
-                )
-        fig.update_traces(customdata=geo_df2['wijknaam'])
-
-    elif wijk_name == 'Haaglanden':    
-        geo_df2 = geo_df.query("gemnaam in @values_haaglanden")
-        fig = px.bar(x=geo_df2[bigger_region],
-                y=geo_df2['wijknaam'],
-                hover_name=geo_df2['wijknaam']
-                )
-        fig.update_traces(customdata=geo_df2['wijknaam'])
-    
-    elif wijk_name == "Leiden":
-        geo_df2 = geo_df[geo_df['gemnaam'] == "Leiden"]
-        fig = px.bar(x=geo_df2[bigger_region],
-                y=geo_df2['wijknaam'],
-                hover_name=geo_df2['wijknaam']
-                )
-        fig.update_traces(customdata=geo_df2['wijknaam'])
-
-    elif wijk_name == "Wassenaar":
-        geo_df2 = geo_df[geo_df['gemnaam'] == "Wassenaar"]
-        fig = px.bar(x=geo_df2[bigger_region],
-                y=geo_df2['wijknaam'],
-                hover_name=geo_df2['wijknaam']
-                )
-        fig.update_traces(customdata=geo_df2['wijknaam'])
-
-    elif wijk_name == "Delft":
-        geo_df2 = geo_df[geo_df['gemnaam'] == "Delft"]
-        fig = px.bar(x=geo_df2[bigger_region],
-                y=geo_df2['wijknaam'],
-                hover_name=geo_df2['wijknaam']
-                )
-        fig.update_traces(customdata=geo_df2['wijknaam'])
-
+    dff = df[df['YEAR'] == year_value]
+    colorscale = ["#402580", 
+        "#38309F", 
+        "#3C50BF", 
+        "#4980DF", 
+        "#56B7FF",
+        "#6ADDFF",
+            # "#7FFCFF",
+            # "#95FFF5",
+            # "#ABFFE8",
+            # "#C2FFE3",
+            # "#DAFFE6"
+        ]
+    if xaxis_column_name in NUMERIC_COLUMN_NAME :
+        variable_name = xaxis_column_name + "_MEAN"
     else:
-        # geo_df2 = geo_df[geo_df['gemnaam'] == "'s-Gravenhage"]
-        # fig = px.bar(x=geo_df2[bigger_region],
-        #         y=geo_df2['wijknaam'],
-        #         hover_name=geo_df2['wijknaam']
-        #         )
-        # fig.update_traces(customdata=geo_df2['wijknaam'])
-        # geo_df2 = geo_df[geo_df['gemnaam'] == "'s-Gravenhage"]
-        dff['group'] = pd.qcut(dff[xaxis_column_name], 4, labels=['Category 1', 'Category 2', 'Category 3', 'Category 4'])
-        colorscale = ["#402580", 
-                  "#38309F", 
-                  "#3C50BF", 
-                  "#4980DF", 
-                  "#56B7FF",
-                  "#6ADDFF",
-                    # "#7FFCFF",
-                    # "#95FFF5",
-                    # "#ABFFE8",
-                    # "#C2FFE3",
-                    # "#DAFFE6"
-                  ]
-        fig = px.bar(x=dff[xaxis_column_name],
+        variable_name = xaxis_column_name
+
+    if wijk_name == 'HadoksArea':    
+        dff = dff.query("GMN in @values_hadoks")
+        dff['group'] = pd.qcut(dff[variable_name], 4, labels=['Low', 'Medium', 'High', 'Very High'])
+        fig = px.bar(x=dff[variable_name],
                 y=dff['Wijknaam'],
                 color=dff['group'],
                 hover_name=dff['Wijknaam'],
@@ -505,8 +444,44 @@ def update_graph_bar(year_value, xaxis_column_name, wijk_name
                 )
         fig.update_traces(customdata=dff['Wijknaam'])
 
-    title = '2. {} - {} - {} '.format(xaxis_column_name, wijk_name, year_value)   
-    fig.update_yaxes(title=xaxis_column_name)
+    elif wijk_name == "'s-gravenhage":    
+
+        dff = dff[dff.GMN == "'s-Gravenhage"]
+        dff['group'] = pd.qcut(dff[variable_name], 4, labels=['Low', 'Medium', 'High', 'Very High'])
+        fig = px.bar(x=dff[variable_name],
+                y=dff['Wijknaam'],
+                color=dff['group'],
+                hover_name=dff['Wijknaam'],
+                color_discrete_sequence=colorscale
+                )
+        fig.update_traces(customdata=dff['Wijknaam'])
+
+    elif wijk_name == "Wassenaar":    
+
+        dff = dff[dff.GMN == "Wassenaar"]
+        dff['group'] = pd.qcut(dff[variable_name], 2, labels=['Low','High'])
+        fig = px.bar(x=dff[variable_name],
+                y=dff['Wijknaam'],
+                color=dff['group'],
+                hover_name=dff['Wijknaam'],
+                color_discrete_sequence=colorscale
+                )
+        fig.update_traces(customdata=dff['Wijknaam'])
+
+
+    else:
+        dff = dff[dff.GMN == wijk_name]
+        dff['group'] = pd.qcut(dff[variable_name], 4, labels=['Low', 'Medium', 'High', 'Very High'])
+        fig = px.bar(x=dff[variable_name],
+                y=dff['Wijknaam'],
+                color=dff['group'],
+                hover_name=dff['Wijknaam'],
+                color_discrete_sequence=colorscale
+                )
+        fig.update_traces(customdata=dff['Wijknaam'])
+
+    title = '{} - {} - {} '.format(xaxis_column_name, wijk_name, year_value)   
+    fig.update_yaxes(title=variable_name)
     fig.update_xaxes(title=wijk_name)
     fig.update_layout(geo=dict(bgcolor= 'rgba(0,0,0,0)'),
                                 autosize=False,
@@ -517,22 +492,34 @@ def update_graph_bar(year_value, xaxis_column_name, wijk_name
 
     return title, fig
 
-# create a dictionary for every unique values in the column 'Wijknaam' with ordered numbers
-
 @app.callback(
     Output('wijk_trend_label', 'children'),
     Output('wijk_trend_fig', 'figure'),
     Input('map', 'clickData'),
     Input('drop_var_id', 'value'),
+    Input('drop_wijk', 'value'),
     State('map', 'figure'),
     prevent_initial_call=False)
 def update_graph(clickData, 
-                 xaxis_column_name, 
+                 xaxis_column_name, wijk_name,
                  f):
     
+    if wijk_name == 'HadoksArea':
+        dff = df.query("GMN in @values_hadoks")
+    elif wijk_name == "'s-gravenhage":
+        dff = df[df['GMN'] == "'s-Gravenhage"]
+    else:
+        dff = df[df['GMN'] == wijk_name]
+
+    if xaxis_column_name in NUMERIC_COLUMN_NAME :
+        variable_name = xaxis_column_name + "_MEAN"
+    else:
+        variable_name = xaxis_column_name
+
     wijk_dict = {}
-    for i in range(len(df['Wijknaam'].unique())):
-        wijk_dict[df['Wijknaam'].unique()[i]] = i
+    for i in range(len(dff['Wijknaam'].unique())):
+        wijk_dict[dff['Wijknaam'].unique()[i]] = i
+    
     colorscale = ["#402580", 
                   "#38309F", 
                   "#3C50BF", 
@@ -545,27 +532,11 @@ def update_graph(clickData,
                     "#C2FFE3",
                     "#DAFFE6"
                   ]
-    # df['group'] = pd.qcut(df[xaxis_column_name], 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
-    fig = px.line(df, x='Jaar', y= xaxis_column_name, color='Wijknaam', color_discrete_sequence=colorscale)
-    # fig.add_trace(go.Scatter(x=df_predicted['Jaar'], y=df_predicted[xaxis_column_name], mode='lines', line={'dash': 'dash', 'color': 'blue'}))
     
-    
+    fig = px.line(dff, x='YEAR', y= variable_name, color='Wijknaam', color_discrete_sequence=colorscale)
+
     fig.update_layout(
             xaxis=dict(
-                rangeselector=
-                dict(
-                    # buttons=list([
-                    #     dict(count=3,
-                    #         label="3y",
-                    #         step="year",
-                    #         stepmode="backward"),
-                    #     dict(count=10,
-                    #         label="10y",
-                    #         step="year",
-                    #         stepmode="todate"),
-                    #     dict(step="all")
-                    # ])
-                ),
                 rangeslider=dict(
                     visible=True
                 ),
@@ -582,16 +553,20 @@ def update_graph(clickData,
                                 
                                 dict(
                                     args=["visible", True],
-                                    # args=[{'visible':False}, [37] ],
                                     label="Select All",
                                     method="restyle"
                                 ),
-                                 dict(
-                                    # args=["visible", True],
-                                    args=[{'visible':False}, [37] ],
-                                    label="Remove Prediction",
+                                dict(
+                                    args=[{'visible':False} ],
+                                    label="Remove All",
                                     method="restyle"
                                 ),
+                                #  dict(
+                                #     # args=["visible", True],
+                                #     args=[{'visible':False}, [37] ],
+                                #     label="Remove Prediction",
+                                #     method="restyle"
+                                # ),
                             ]),
                             pad={"r": 0, "t": -20},
                             showactive=False,
@@ -602,16 +577,17 @@ def update_graph(clickData,
                         ),
                     ]
               ))
+    
     if clickData is None:
-        title = '3. {} - {}'.format(xaxis_column_name, "Centrum")
+        title = '{} - {}'.format(xaxis_column_name, " Wijk 28 Centrum")
         
         fig.update_traces(visible="legendonly") 
+        
+        fig.data[wijk_dict[list(wijk_dict.keys())[0]]].visible=True 
 
-        fig.data[wijk_dict["Centrum"]].visible=True 
-
-        fig.add_trace(go.Scatter(x=df_predicted[df_predicted['Wijknaam'] == "Centrum"]['Jaar'], 
-                                 y=df_predicted[df_predicted['Wijknaam'] == "Centrum"][xaxis_column_name], 
-                                 mode='lines', line={'dash': 'dash', 'color': 'blue'}, name='Predicted trend'))
+        # fig.add_trace(go.Scatter(x=df_predicted[df_predicted['Wijknaam'] == " Wijk 28 Centrum"]['Jaar'], 
+        #                          y=df_predicted[df_predicted['Wijknaam'] == " Wijk 28 Centrum"][variable_name], 
+        #                          mode='lines', line={'dash': 'dash', 'color': 'blue'}, name='Predicted trend'))
     
 
         return title, fig
@@ -624,9 +600,9 @@ def update_graph(clickData,
 
         fig.update_traces(visible="legendonly") 
 
-        fig.add_trace(go.Scatter(x=df_predicted[df_predicted['Wijknaam'] == city]['Jaar'], 
-                                 y=df_predicted[df_predicted['Wijknaam'] == city][xaxis_column_name], 
-                                 mode='lines', line={'dash': 'dash', 'color': 'blue'}, name='Predicted trend'))
+        # fig.add_trace(go.Scatter(x=df_predicted[df_predicted['Wijknaam'] == city]['Jaar'], 
+        #                          y=df_predicted[df_predicted['Wijknaam'] == city][variable_name], 
+        #                          mode='lines', line={'dash': 'dash', 'color': 'blue'}, name='Predicted trend'))
     
 
         fig.data[wijk_dict[city]].visible=True 
@@ -635,8 +611,6 @@ def update_graph(clickData,
     
 
     return title, dash.no_update
-
-# take the first row of the dataframe and create a copy of it for n times
 
 
 
