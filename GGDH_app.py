@@ -60,9 +60,9 @@ df = df_count.merge(df_numeric, on=['WKC','Wijknaam','GMN','YEAR'])
 radio_themes = dbc.RadioItems(
         id='ani_themes', 
         className='radio',
-        options=[dict(label='Home', value=0), dict(label='Adv Analysitc', value=1, href='https://ggdh-dash-adv-analytics.onrender.com'), dict(label='Diabetes', value=2), dict(label='Chronic Care', value=3), dict(label='Report', value=4)],
+        options=[dict(label='Home', value=0), dict(label='Adv Analytics', value=1), dict(label='Diabetes', value=2), dict(label='Chronic Care', value=3), dict(label='Report', value=4)],
         value=0, 
-        inline=True
+        inline=True,   
     )
 
 
@@ -257,7 +257,7 @@ app.layout = html.Div([
                                 slider_map
                             ], style={'margin-left': '5%', 'position':'relative', 'top':'-10px'}),
 
-                            dcc.Graph(id='map', style={'position':'relative',  'height':'300px', 'top':'10px'
+                            dcc.Graph(id='map', style={'position':'relative',  'height':'400px', 'top':'10px'
                                                        }), 
 
                             
@@ -276,7 +276,7 @@ app.layout = html.Div([
                     ]),
 
                     
-                ], style={'width': '60%', 'float': 'left', 'box-sizing': 'border-box'}),
+                ], style={'width': '65%', 'float': 'left', 'box-sizing': 'border-box'}),
 
                 
             
@@ -284,11 +284,11 @@ app.layout = html.Div([
 
                     html.Div([   
                         html.Label(id='title_bar'),           
-                        dcc.Graph(id='bar_fig', style={'height':'864px'}), 
+                        dcc.Graph(id='bar_fig', style={'height':'964px'}), 
                         # html.Br(),
                     ], className='box'),
                     
-                ], style={'width': '40%','display': 'inline-block'}),
+                ], style={'width': '35%','display': 'inline-block'}),
 
 
                            
@@ -352,7 +352,12 @@ def update_graph_map(year_value, xaxis_column_name, wijk_name
                   "#3C50BF", 
                   "#4980DF", 
                   "#56B7FF",
-                  "#6ADDFF"
+                  "#6ADDFF",
+                  "#7FFCFF",
+            "#95FFF5",
+            "#ABFFE8",
+            "#C2FFE3",
+            "#DAFFE6"
                   ]
 
 
@@ -366,20 +371,20 @@ def update_graph_map(year_value, xaxis_column_name, wijk_name
     if wijk_name == 'HadoksArea':    
         dff = dff.query("GMN in @values_hadoks")
         fig = px.choropleth_mapbox(dff, geojson=geo_df, color=variable_name,
-                            locations="WKC", featureidkey="properties.WKC", opacity = 0.3,
+                            locations="WKC", featureidkey="properties.WKC", opacity = 0.5,
                             center={"lat": 52.0705, "lon": 4.3003}, color_continuous_scale=colorscale,
-                            mapbox_style="carto-positron", zoom=9, hover_name="Wijknaam")
+                            mapbox_style="carto-positron", zoom=10, hover_name="Wijknaam")
         
     elif wijk_name == "'s-gravenhage":    
         fig = px.choropleth_mapbox(dff[dff.GMN == "'s-Gravenhage"], geojson=geo_df, color=variable_name,
-                            locations="WKC", featureidkey="properties.WKC", opacity = 0.3,
+                            locations="WKC", featureidkey="properties.WKC", opacity = 0.5,
                             center={"lat": 52.0705, "lon": 4.3003}, color_continuous_scale=colorscale,
-                            mapbox_style="carto-positron", zoom=9, hover_name="Wijknaam")
+                            mapbox_style="carto-positron", zoom=10, hover_name="Wijknaam")
    
     else:
 
         fig = px.choropleth_mapbox(dff[dff.GMN == wijk_name], geojson=geo_df, color=variable_name,
-                            locations="WKC", featureidkey="properties.WKC", opacity = 0.3,
+                            locations="WKC", featureidkey="properties.WKC", opacity = 0.5,
                             center={"lat": 52.0705, "lon": 4.3003}, color_continuous_scale=colorscale,
                             mapbox_style="carto-positron", zoom=10, hover_name="Wijknaam")
 
@@ -411,12 +416,8 @@ def update_graph_bar(year_value, xaxis_column_name, wijk_name
         "#3C50BF", 
         "#4980DF", 
         "#56B7FF",
-        "#6ADDFF",
-            # "#7FFCFF",
-            # "#95FFF5",
-            # "#ABFFE8",
-            # "#C2FFE3",
-            # "#DAFFE6"
+        "#6ADDFF"
+            
         ]
     if xaxis_column_name in NUMERIC_COLUMN_NAME :
         variable_name = xaxis_column_name + "_MEAN"
@@ -547,7 +548,7 @@ def update_graph(clickData,
                                     method="restyle"
                                 ),
                                 dict(
-                                    args=[{'visible':False} ],
+                                    args=[{'visible':'legendonly'} ],
                                     label="Remove All",
                                     method="restyle"
                                 ),
