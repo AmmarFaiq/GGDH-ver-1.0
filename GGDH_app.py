@@ -491,7 +491,7 @@ def update_graph_map(year_value, xaxis_column_name, wijk_name, wijk_spec
         
     dff = dff.query("Wijknaam in @wijk_spec")
 
-    fig = px.choropleth_mapbox(dff, geojson=geo_df_fff, color=variable_name,
+    fig = px.choropleth_mapbox(dff, geojson=geo_df, color=variable_name,
                             locations="WKC", featureidkey="properties.WKC", opacity = 0.5,
                             center={"lat": 52.0705, "lon": 4.3003}, color_continuous_scale=colorscale,
                             mapbox_style="carto-positron", zoom=10, hover_name="Wijknaam")
