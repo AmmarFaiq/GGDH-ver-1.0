@@ -1,4 +1,18 @@
-# GGDH Dashboard Ver 2.0
+# GGDH Dashboard Ver 3.0
+
+New in ver 3.0:
+
+1. Updated data from 2009 to 2022 (some datasets only have certain years of data)
+2. Updated search and filter bar to select certain neighbourhood
+3. Move the Year slider up
+4. The year slider corresponds to the data availability
+
+Things that need to be fixed:
+1. Liedschendam-Voorburg "Wijk" is still not correct.
+2. Add new 2021 data
+
+
+
 
 Link :
 
