@@ -53,8 +53,8 @@ values_all_regions = values_haaglanden + values_roaz
 geo_df = geo_df.query("gemnaam in @values_all_regions")
 
 
-df_numeric = pd.read_csv(path + 'df_numeric ver 2.csv', sep = ',')
-df_count = pd.read_csv(path + 'df_count ver 2.csv', sep = ',')
+df_numeric = pd.read_csv(path + 'df_numeric ver 2.csv', sep = ',',encoding= 'latin-1')
+df_count = pd.read_csv(path + 'df_count ver 2.csv', sep = ',',encoding= 'latin-1')
 df = df_count.merge(df_numeric, on=['WKC','Wijknaam','GMN','YEAR'])
 
 radio_themes = dbc.RadioItems(
