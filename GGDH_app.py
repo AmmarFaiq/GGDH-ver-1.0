@@ -57,14 +57,6 @@ df_numeric = pd.read_csv(path + 'df_numeric_ver_2.csv', sep = ',')
 df_count = pd.read_csv(path + 'df_count_ver_2.csv', sep = ',')
 df = df_count.merge(df_numeric, on=['WKC','Wijknaam','GMN','YEAR'])
 
-radio_themes = dbc.RadioItems(
-        id='ani_themes', 
-        className='radio',
-        options=[dict(label='Home', value=0), dict(label='Adv Analytics', value=1), dict(label='Diabetes', value=2), dict(label='Chronic Care', value=3), dict(label='Report', value=4)],
-        value=0, 
-        inline=True,   
-    )
-
 
 # options_chronic = geo_df.columns[9:25]
 
@@ -175,51 +167,51 @@ app.layout = html.Div([
                                                                 'height' : '110px'
                                                                 })], href='https://healthcampusdenhaag.nl/nl/'),
                     html.Div([
-                        html.Img(src=app.get_asset_url('lumc-1-500x500.jpg'), style={'display': 'inline-block',
+                        html.A([html.Img(src=app.get_asset_url('lumc-1-500x500.jpg'), style={'display': 'inline-block',
                                                                                      'margin-top': '10px',
                                                                 'width' : '100px',
                                                                 'height' : '100px'
-                                                                }),
-                    html.Img(src=app.get_asset_url('uni_leiden-500x500.jpg'), style={'display': 'inline-block',
+                                                                })], href='https://www.lumc.nl/en/'),
+                    html.A([html.Img(src=app.get_asset_url('uni_leiden-500x500.jpg'), style={'display': 'inline-block',
                                                                                      'margin-top': '10px',
                                                                 'width' : '100px',
                                                                 'height' : '100px'
-                                                                }),
-                    html.Img(src=app.get_asset_url('hhs-500x500.jpg'), style={'display': 'inline-block',
+                                                                })], href='https://www.universiteitleiden.nl/en'),
+                    html.A([html.Img(src=app.get_asset_url('hhs-500x500.jpg'), style={'display': 'inline-block',
                                                                               'margin-top': '10px',
                                                                 'width' : '100px',
                                                                 'height' : '100px'
-                                                                }),                                                   
-                    html.Img(src=app.get_asset_url('hmc-1-500x500.jpg'), style={'display': 'inline-block',
+                                                                })], href='https://www.dehaagsehogeschool.nl/'),                                                   
+                    html.A([html.Img(src=app.get_asset_url('hmc-1-500x500.jpg'), style={'display': 'inline-block',
                                                                                 'margin-top': '10px',
                                                                 'width' : '100px',
                                                                 'height' : '100px'
-                                                                }),  
-                    html.Img(src=app.get_asset_url('haga_ziekenhuis-500x500.jpg'), style={'display': 'inline-block',
+                                                                })], href='https://www.haaglandenmc.nl/'),  
+                    html.A([html.Img(src=app.get_asset_url('haga_ziekenhuis-500x500.jpg'), style={'display': 'inline-block',
                                                                                           'margin-top': '10px',
                                                                 'width' : '100px',
                                                                 'height' : '100px'
-                                                                }),
-                    html.Img(src=app.get_asset_url('hadoks-1-500x500.jpg'), style={'display': 'inline-block',
+                                                                })], href='https://www.hagaziekenhuis.nl/home/'),
+                    html.A([html.Img(src=app.get_asset_url('hadoks-1-500x500.jpg'), style={'display': 'inline-block',
                                                                                    'margin-top': '10px',
                                                                 'width' : '100px',
                                                                 'height' : '100px'
-                                                                }),
-                    html.Img(src=app.get_asset_url('parnassia-500x500.jpg'), style={'display': 'inline-block',
+                                                                })], href='https://www.hadoks.nl/'),
+                    html.A([html.Img(src=app.get_asset_url('parnassia-500x500.jpg'), style={'display': 'inline-block',
                                                                                     'margin-top': '10px',
                                                                 'width' : '100px',
                                                                 'height' : '100px'
-                                                                }),
-                    html.Img(src=app.get_asset_url('rienier_de_graaf-500x500.jpg'), style={'display': 'inline-block',
+                                                                })], href='https://www.parnassia.nl/'),
+                    html.A([html.Img(src=app.get_asset_url('rienier_de_graaf-500x500.jpg'), style={'display': 'inline-block',
                                                                                            'margin-top': '10px',
                                                                 'width' : '100px',
                                                                 'height' : '100px'
-                                                                }),
-                    html.Img(src=app.get_asset_url('gemeente_dh-500x500.jpg'), style={'display': 'inline-block',
+                                                                })], href='https://reinierdegraaf.nl/'),
+                    html.A([html.Img(src=app.get_asset_url('gemeente_dh-500x500.jpg'), style={'display': 'inline-block',
                                                                                       'margin-top': '10px',
                                                                 'width' : '100px',
                                                                 'height' : '100px'
-                                                                }),
+                                                                })], href='https://www.denhaag.nl/nl.htm'),
                     ], style={'display': 'inline-block','margin-left': '300px'}),
             
             
@@ -349,7 +341,23 @@ app.layout = html.Div([
                 html.Div([
                 html.Label("Check Out the Other Themes:"), 
                 html.Br(),
-                radio_themes
+                html.Br(),
+                # dbc.RadioItems(
+                #     id='pages_themes', 
+                #     className='radio',
+                #     options=[dict(label='Home', value=0), dict(label='Adv Analytics', value=1), dict(label='Diabetes', value=2), dict(label='Chronic Care', value=3), dict(label='Report', value=4)],
+                #     value=0, 
+                #     inline=True
+                # ),
+                html.Div([
+                dbc.Button( "Neighbourhood Dashboard", className='button-8', href="https://ggdh-ver-1-0.onrender.com/"),
+                dbc.Button( "Supply vs Demand in Healthcare", className='button-8', href="https://ggdh-dash-adv-analytics.onrender.com"),
+                dbc.Button( "Diabetes", className='button-8', href="https://ggdh-ver-1-0.onrender.com/"),
+                dbc.Button( "Palliative Care", className='button-8', href="https://ggdh-dash-adv-analytics.onrender.com"),
+                dbc.Button( "Young Care", className='button-8', href="https://ggdh-ver-1-0.onrender.com/")
+                ], style={'display':'flex', 'justify-content':'space-between', 'width':'90%', 'margin-left':'5%', 'margin-right':'5%'}),
+
+                html.Br(),
             ], className='box', style={ }),
             
             
@@ -364,7 +372,7 @@ app.layout = html.Div([
                     html.P(['Health Campus Den Haag', html.Br(),'Turfmarkt 99, 3e etage, 2511 DP, Den Haag'], style={'color':'white', 'font-size':'12px'}),
                 ], style={'width':'60%'}), 
                 html.Div([
-                    html.P(['Sources ', html.Br(), html.A('ELAN', href='https://ourworldindata.org/', target='_blank'), ', ', html.A('Microdata CBS', href='http://www.fao.org/faostat/en/#data', target='_blank')], style={'color':'white', 'font-size':'12px'})
+                    html.P(['Sources ', html.Br(), html.A('ELAN', href='https://gezondengelukkigdenhaag.nl/', target='_blank'), ', ', html.A('Microdata CBS', href='https://www.cbs.nl/en-gb/our-services/customised-services-microdata/microdata-conducting-your-own-research', target='_blank')], style={'color':'white', 'font-size':'12px'})
                 ], style={'width':'37%'}),
             ], className = 'footer', style={'display':'flex'}),
     ]),
