@@ -422,7 +422,7 @@ app.layout = html.Div([
         html.Div([
                 html.Div([
                     html.P(['Health Campus Den Haag', html.Br(),'Turfmarkt 99, 3e etage, 2511 DP, Den Haag'], style={'color':'white', 'font-size':'12px'}),
-                ], style={'width':'60%'}), 
+                ], style={'width':'60%', 'margin-left':'5%'}), 
                 html.Div([
                     html.P(['Sources ', html.Br(), html.A('GGDH-ELAN', href='https://gezondengelukkigdenhaag.nl/', target='_blank'), ', ', html.A('Microdata CBS', href='https://www.cbs.nl/en-gb/our-services/customised-services-microdata/microdata-conducting-your-own-research', target='_blank')], style={'color':'white', 'font-size':'12px'})
                 ], style={'width':'37%'}),
