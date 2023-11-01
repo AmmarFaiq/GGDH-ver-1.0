@@ -153,19 +153,52 @@ app.layout = html.Div([
 
     
         html.Div([
-                    html.H1(children='ELAN Neighbourhood Dashboard', style={
-                                                                'display': 'inline-block',    
-                                                                'width' : '150px',
-                                                                'height' : '50px',
-                                                                'margin-right': '150px',
-                                                                'margin-left': '10px',
-                                                                    'font-size': '20px',
-                                                                }),
-                    html.A([html.Img(src=app.get_asset_url('hc-dh-logo.png'), style={'display': 'inline-block',
+                                            html.Div(
+                            [
+                                dbc.Row(
+                                    [
+                                        dbc.Col(
+                                            html.A([html.Img(src=app.get_asset_url('hc-dh-logo.png'), style={'display': 'inline-block',
                                                                              'margin-top': '10px',
                                                                 'width' : '110px',
                                                                 'height' : '110px'
                                                                 })], href='https://healthcampusdenhaag.nl/nl/'),
+                                            className="col-md-4",
+                                        ),
+                                        dbc.Col(
+                                            html.Div(
+                                                [
+                                                    html.H4("ELAN Neighbourhood Dashboard", className="card-title"),
+                                                    # html.P(
+                                                    #     "This is a wider card with supporting text "
+                                                    #     "below as a natural lead-in to additional "
+                                                    #     "content. This content is a bit longer.",
+                                                    #     className="card-text",
+                                                    # ),
+                                                    html.Small(
+                                                        "Last updated October 2023",
+                                                        className="card-text text-muted",
+                                                    ),
+                                                ]
+                                            ),
+                                            className="col-md-8",
+                                        ),
+                                    ],
+                                    className="g-0 d-flex align-items-center",
+                                )
+                            ],
+                            className="mb-3",
+                            style={'margin-top': '10px','margin-left': '20px',"width": "540px",'height' : '120px'},
+                        ),
+                    # html.H1(children='Supply vs Demand in Healthcare Dashboard', style={
+                    #                                             'display': 'inline-block',    
+                    #                                             'width' : '180px',
+                    #                                             'height' : '50px',
+                    #                                             'margin-right': '150px',
+                    #                                             'margin-left': '100px',
+                    #                                                 'font-size': '20px',
+                    #                                             }),
+                    
                     html.Div([
                         html.A([html.Img(src=app.get_asset_url('lumc-1-500x500.jpg'), style={'display': 'inline-block',
                                                                                      'margin-top': '10px',
@@ -212,7 +245,7 @@ app.layout = html.Div([
                                                                 'width' : '100px',
                                                                 'height' : '100px'
                                                                 })], href='https://www.denhaag.nl/nl.htm'),
-                    ], style={'display': 'inline-block','margin-left': '300px'}),
+                    ], style={'display': 'inline-block','margin-left': '10%'}),
             
             
         ], style={ 
@@ -233,49 +266,68 @@ app.layout = html.Div([
 
             html.Div([
     
-                    html.Div([
-                    html.Div([
-                    html.Label('Choose a variable to plot :', id='choose_variable'#, style= {'margin': '5px'}
-                               ),
-                    drop_var], style={'width': '30%','display': 'inline-block'}),
+                    # html.Div([
+                    
+                    # ], className='box'),
 
-                    html.Div([
-                    html.Label('Choose a region to plot:', id='choose_area'#, style= {'margin': '5px'}
-                               ),
-                                    drop_wijk, 
-                             
-                                ], style={'width': '15%','display': 'inline-block'}),
-                    html.Div([
-                    html.Label('Choose neighbourhoods to plot:', id='choose_wijk'#, style= {'margin': '5px'}
-                               ),
-                                    dcc.Dropdown(
-                                            CATEGORICAL_COLUMN_NAME + NUMERIC_COLUMN_NAME,
-                                            # 'Total_Population',
-                                            id = 'drop_wijk_spec_id',
-                                            clearable=True,
-                                            searchable=True, 
-                                            multi=True,
-                                            style= {'margin': '4px', 'box-shadow': '0px 0px #ebb36a', 'border-color': '#ebb36a'}        
-                                        ), 
-                             
-                                ], style={'width': '55%','display': 'inline-block'}),
-                    html.Br(),
-                    html.Br(),
-                    html.Br(),
-                    # html.Br(),
-                    # html.Br(),            
-                    html.Div([
-                                daq.Slider(
-                                    id = 'slider_map',
-                                    handleLabel={"showCurrentValue": True,"label": "Year"},
-                                    # marks = {str(i):str(i) for i in [str(i) for i in range(2009, 2023)]},
-                                    # min = 2009,
-                                    # max = 2022,
-                                    size=1000, 
-                                    color='#ADD8E6'
-                                )
-                            ],  style={  'margin-left' : '15%', 'margin-right' : '15%', 'padding':'1%'}),
-                    ], className='box'),
+                    html.Div(
+                    dbc.Accordion(
+                        [
+                            dbc.AccordionItem(
+                                [
+                                    html.Div([
+                                        html.Div([
+                                        html.Label('Choose a variable to plot :', id='choose_variable'#, style= {'margin': '5px'}
+                                                ),
+                                        drop_var], style={'width': '30%','display': 'inline-block'}),
+
+                                        html.Div([
+                                        html.Label('Choose a region to plot:', id='choose_area'#, style= {'margin': '5px'}
+                                                ),
+                                                        drop_wijk, 
+                                                
+                                                    ], style={'width': '15%','display': 'inline-block'}),
+                                        html.Div([
+                                        html.Label('Choose neighbourhoods to plot:', id='choose_wijk'#, style= {'margin': '5px'}
+                                                ),
+                                                        dcc.Dropdown(
+                                                                CATEGORICAL_COLUMN_NAME + NUMERIC_COLUMN_NAME,
+                                                                # 'Total_Population',
+                                                                id = 'drop_wijk_spec_id',
+                                                                clearable=True,
+                                                                searchable=True, 
+                                                                multi=True,
+                                                                style= {'margin': '4px', 'box-shadow': '0px 0px #ebb36a', 'border-color': '#ebb36a'}        
+                                                            ), 
+                                                
+                                                    ], style={'width': '55%','display': 'inline-block'}),
+                                        html.Br(),
+                                        html.Br(),
+                                        html.Br(),
+                                        # html.Br(),
+                                        # html.Br(),            
+                                        html.Div([
+                                                    daq.Slider(
+                                                        id = 'slider_map',
+                                                        handleLabel={"showCurrentValue": True,"label": "Year"},
+                                                        # marks = {str(i):str(i) for i in [str(i) for i in range(2009, 2023)]},
+                                                        # min = 2009,
+                                                        # max = 2022,
+                                                        size=1000, 
+                                                        color='#ADD8E6'
+                                                    )
+                                                ],  style={  'margin-left' : '15%', 'margin-right' : '15%', 'padding':'1%'}),
+                    
+                                      
+
+                                        ]),
+                                ],
+                                title="Variable, Region and Year Selection :",
+                            ),
+                            
+                        ],
+                    )
+                ),
                 html.Div([
                     
 
@@ -287,7 +339,7 @@ app.layout = html.Div([
                                 
                                 html.Div([
                                     
-                                    html.Label(id='title_map', style={'font-size':'medium','padding-bottom': '10%'}), 
+                                    html.Label(id='title_map', style={'font-size':'medium'}), 
                                     html.Br(),
                                     html.Label('Click on a tile to see the trendline!', style={'font-size':'9px','color' : 'black'}),
                                     
@@ -327,7 +379,7 @@ app.layout = html.Div([
 
                     html.Div([   
                         html.Label(id='title_bar'),           
-                        dcc.Graph(id='bar_fig', style={'height':'964px'}), 
+                        dcc.Graph(id='bar_fig', style={'height':'982px'}), 
                         # html.Br(),
                     ], className='box'),
                     
@@ -372,7 +424,7 @@ app.layout = html.Div([
                     html.P(['Health Campus Den Haag', html.Br(),'Turfmarkt 99, 3e etage, 2511 DP, Den Haag'], style={'color':'white', 'font-size':'12px'}),
                 ], style={'width':'60%'}), 
                 html.Div([
-                    html.P(['Sources ', html.Br(), html.A('ELAN', href='https://gezondengelukkigdenhaag.nl/', target='_blank'), ', ', html.A('Microdata CBS', href='https://www.cbs.nl/en-gb/our-services/customised-services-microdata/microdata-conducting-your-own-research', target='_blank')], style={'color':'white', 'font-size':'12px'})
+                    html.P(['Sources ', html.Br(), html.A('GGDH-ELAN', href='https://gezondengelukkigdenhaag.nl/', target='_blank'), ', ', html.A('Microdata CBS', href='https://www.cbs.nl/en-gb/our-services/customised-services-microdata/microdata-conducting-your-own-research', target='_blank')], style={'color':'white', 'font-size':'12px'})
                 ], style={'width':'37%'}),
             ], className = 'footer', style={'display':'flex'}),
     ]),
