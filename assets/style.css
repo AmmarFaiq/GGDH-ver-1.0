@@ -1,36 +1,145 @@
+@charset "UTF-8";
 body {
   background-color:#f7fbfe;
-  font-family: "pt-sans-pro";
+  font-family: "pt-sans-pro", sans-serif;
+  margin: 0 auto;
 }
 
-.side_bar {
-  height: 14%;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: #d6ebfa;
-  padding-left: 5%;
-  padding-right: 5%;
-  color:rgb(7, 7, 7);
-}
-
-.main {
+#main {
   font-size: 15px; 
-  padding: 50px 50px;
+  padding: 20px 50px;
   padding-left: 5%;
   padding-right: 5%;
   color:#001158;
+  position: relative;
 }
 
-.footer {
+
+#header{
+  background: url("Line.png") no-repeat 0px -250px;
+  min-height: 168px;
+  width: 100%;
+  display: flex;
+}
+
+#headercontent{
   position: relative;
-  left: -8px;
-  /* right: -50px; */
-  bottom: -20px;
-  width: 101%;
+}
+
+#header h1{
+  font-size: calc(1.275rem + .3vw);
+  line-height: 1.2;
+  font-family: inherit;
+}
+
+#header p{
+  font-size: .875em;
+  color: #6c757d!important;
+}
+
+#header img{
+  width: 150px;
+}
+
+#header a{
+  color: #001158;
+  margin-right: 10px;
+  padding-right: 10px;
+  text-decoration: none;
+}
+#header a:hover{
+  color: #1e3699;
+}
+
+#header a:focus {
+  color: #5cb1eb;
+}
+
+#lang_select_parent{
+  position: absolute;
+  right: 0;
+  top: 0
+}
+
+#lang_select_parent img{
+  width: 30px;
+}
+
+.custom_select{
+  margin: 4px;
+  box-shadow: 0px 0px #ebb36a;
+  border: 1px solid #ebb36a;
+  border-radius: 5px;
+}
+
+/* Now this allows for responsiveness 😏 */
+
+#select_variable{
+  width: 30%;
+}
+
+#select_region{
+  width: 15%;
+}
+
+#select_neighbourhoods{
+  width: 55%;
+}
+
+#select_container > div{
+  display: inline-block;
+}
+
+@media only screen and (max-width: 1000px) {
+  #headersub{
+    display: none;
+  }
+}
+
+#footer {
+  position: relative;
+  width: 100%;
+  margin-top: 100px;
+  padding: 40px 100px 10px 100px;
   background-color: #001158;
-  padding-left: 0;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-family: inherit;
+  overflow: hidden;
+}
+
+#footer ul{
+  list-style-type: none;
+  line-height: 200%;
+}
+
+#footer a{
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+#footer img{
+  display: inline-block;
+  margin-top: 10px;
+  width: 100px;
+  height: 100px;
+}
+
+#footer h1{
+  color: #4766e2;
+  font-size: 20px;
+  font-family: inherit;
+  margin: 10px 0 20px 0;
+  padding: 0;
+}
+
+.footerelement{
+  width: 33%;
+  float: left;
+}
+
+#partners{
+  text-align: center;
 }
 
 h1 {
@@ -61,123 +170,120 @@ h4 {
   display: flex;
 }
 
+#sliderContainer{
+  margin: 0 5% 0 5%;
+  padding: 1%;
+  width: 90%;
+}
+
+#slider_select_year{
+  width: auto;
+  display: block;
+}
+
+#drop_municipality_spec_id{
+  margin: 4px;
+  box-shadow: 0px 0px #ebb36a;
+  border-color: #ebb36a;
+}
+
+#graphContainer H1{
+  font-family: inherit;  
+  font-size: medium;
+  color: inherit;
+  font-weight: 400;
+  font-size: 20px;
+}
+
+#graphContainer p{
+  font-family: inherit;  
+  font-size: 18px;
+  color: #000000;
+  margin: 0 0 0 10px;
+}
+
+#leftcell{
+  width: 65%;
+  float: left;
+  box-sizing: border-box;
+}
+
+#rightcell{
+  width: 35%;
+  display: inline-block;
+}
+
+#drop_select_year{
+  display: none;
+}
+
+@media only screen and (max-width: 1020px) {
+  #leftcell{
+    width: 100%;
+  }
+
+  #rightcell{
+    width: 100%;
+  }
+
+  #select_variable{
+    width: 50%;
+  }
+
+  #select_region{
+    width: 50%;
+  }
+
+  #select_neighbourhoods{
+    width: 100%;
+  }
+
+  #drop_select_year{
+    display: block;
+  }
+
+  #slider_select_year{
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 1240px) {
+  .footerelement{
+    width: 50%;
+  }
+
+  #partners{
+    width: 100%;
+  }
+}
+/* Graph style */
+
+#map{
+  height: 466px;
+}
+
+#wijk_trend_fig{
+  height: 400px;
+}
+
+#bar_fig{
+  height: 1016px;
+}
+
 /* Boxes */
 
 .box {
   border-radius: 10px;
   background-color: white;
-  margin: 5px;
+  margin: 5px 5px 25px 5px;
   padding: 20px;
   box-shadow: 2px 2px 2px #aed8f5;
 }
 
-.box_comment {
-  border-radius: 20px;
-  background-color: #ADD8E6;
-  margin: 10px;
-  padding: 10px;
-  box-shadow: 2px 2px 2px #aed8f5;
-  font-size: small;
-  text-align: center;
-  font-family: "pt-sans-pro";
-}
-
-.box_emissions{
-  border-radius: 20px;
-  background-color: #F9F9F8;    
-  margin: 2px;
-  box-shadow: 2px 2px 2px #F9F9F8;
-  justify-content: center;
-  width: 50%;
-  text-align: center;
-  font-family: "pt-sans-pro";
-}
-/* Drop down */
-#drop_map .VirtualizedSelectFocusedOption {
-  background-color:#ffd100;
-}
-
-#drop_continent .VirtualizedSelectFocusedOption {
-  background-color:#ffd100;
-}
-
-/* Radio buttons */
-.radio {
-  display:flex;
-  justify-content: left;
-  place-content:space-evenly;
-  width: 100%;
-}
-
-.radio input[type="radio"] {
-  opacity: 0;
-  position: absolute;
-}
-
-.radio label {
-  display: table-caption;
-  background-color: #F9F9F8;
-  padding: 5px 5px;
-  font-size: 16px;
-  border: 2px solid #F9F9F8;
-  border-radius: 15px;
-  width: 200%;
-  text-align: center;
-  font-family: "pt-sans-pro";
-}
-
-.radio input[type="radio"]:checked + label {
-  background-color: #ffd100;              
-  border: 2px solid #F9F9F8;
-}
-
-.radio label:hover {
-  background-color: #F9F9F8;
-  border: 2px solid #F9F9F8;
-}
-
-
-/* Button-8 new */
-.button-8 {
-  background-color: #e1ecf4;
-  border-radius: 3px;
-  border: 1px solid #7aa7c7;
-  box-shadow: rgba(255, 255, 255, .7) 0 1px 0 0 inset;
-  box-sizing: border-box;
-  color: #39739d;
-  cursor: pointer;
-  display: inline-block;
-  font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.15385;
-  margin: 0;
-  outline: none;
-  padding: 8px .8em;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: baseline;
-  white-space: nowrap;
-}
-
-.button-8:hover,
-.button-8:focus {
-  background-color: #b3d3ea;
-  color: #2c5777;
-}
-
-.button-8:focus {
-  box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
-}
-
-.button-8:active {
-  background-color: #a0c7e4;
-  box-shadow: none;
-  color: #2c5777;
+.drop_var_id {
+  margin: 4px;
+  box-shadow: 0px 0px #ebb36a;
+  border-color: #ebb36a;
 }
 
 /* Scrollbars */
@@ -194,35 +300,7 @@ h4 {
 }
 
 
-/* Style the button that is used to open and close the collapsible content */
-.collapsible {
-  background-color: #eee;
-  color: #444;
-  cursor: pointer;
-  padding: 18px;
-  width: 100%;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 15px;
-}
-
-/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-.active, .collapsible:hover {
-  background-color: #ccc;
-}
-
-/* Style the collapsible content. Note: hidden by default */
-.content {
-  padding: 0 18px;
-  display: none;
-  overflow: hidden;
-  background-color: #f1f1f1;
-}
-
-
-
-@charset "UTF-8";/*!
+/*!
  * Bootstrap v5.0.2 (https://getbootstrap.com/)
  * Copyright 2011-2021 The Bootstrap Authors
  * Copyright 2011-2021 Twitter, Inc.
