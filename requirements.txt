@@ -11,6 +11,4 @@ plotly
 requests
 geopandas
 pathlib
-datetime 
-locale
-enum
+datetime
