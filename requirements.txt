@@ -11,3 +11,7 @@ plotly
 requests
 geopandas
 json
+pathlib
+datetime 
+locale
+enum
